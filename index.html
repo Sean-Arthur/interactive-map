@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Kävlinge Interactive Map</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="brand">
+        <span class="brand-icon">G</span>
+        <div>
+          <h1>Kävlinge Interactive Map</h1>
+          <p>Interactive geographic information</p>
+        </div>
+      </div>
+
+      <span class="status">
+        <span class="status-dot"></span>
+        Interactive map
+      </span>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="intro">
+      <p class="eyebrow">GEOGRAPHIC INFORMATION SYSTEM</p>
+      <h2>Explore Kävlinge</h2>
+      <p>
+        An interactive map project exploring geographic
+        information in and around Kävlinge.
+      </p>
+    </section>
+
+    <section class="map-section" aria-label="Interactive map">
+      <div class="map-toolbar">
+        <div>
+          <h3>Map view</h3>
+          <p>Pan and zoom to explore the area.</p>
+        </div>
+
+        <span class="map-label">Kävlinge, Sweden</span>
+      </div>
+
+      <div id="map" role="application" aria-label="Map of Kävlinge"></div>
+
+      <div class="map-footer">
+        <span>Base map: OpenStreetMap</span>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>
+        Built with Leaflet and open geographic technologies.
+      </p>
+    </footer>
+  </main>
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Application JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
