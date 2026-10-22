@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
           layer.bindPopup('Kävlinge kommun');
         }
       }
+    }).addTo(map);
 
    const kavlingeOutline = L.geoJSON(data, {
   filter: feature => feature.properties.KnNamn === 'Kävlinge',
