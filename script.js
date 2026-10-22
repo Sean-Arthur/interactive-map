@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return {
           // Orange outline for Kävlinge, grey outlines for other areas
-          color: isKavlinge ? '#e4572e' : '#a5a5a5',
-          weight: isKavlinge ? 3 : 0.5,
+          color: isKavlinge ? '#ffffff' : '#a5a5a5',
+          weight: isKavlinge ? 8 : 0.5,
 
           // Grey fill for other kommun
           fillColor: '#b8b8b8',
@@ -49,6 +49,16 @@ document.addEventListener('DOMContentLoaded', function () {
           layer.bindPopup('Kävlinge kommun');
         }
       }
+
+   const kavlingeOutline = L.geoJSON(data, {
+  filter: feature => feature.properties.KnNamn === 'Kävlinge',
+  style: {
+    color: '#f06423',
+    weight: 4,
+    opacity: 1,
+    fillOpacity: 0,
+    interactive: false
+  }
 
     }).addTo(map);
 
