@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Set cursor to crosshair
   map.getContainer().style.cursor = 'crosshair';
-fetch('data/Kommun.geojson')
 
   // Add OpenStreetMap base layer
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -13,6 +12,7 @@ fetch('data/Kommun.geojson')
   }).addTo(map);
 
   // Check that the GeoJSON file loaded successfully
+  fetch('data/kommun.geojson')
   .then(response => {
     if (!response.ok) {
       throw new Error('Could not load kommun boundary file');
@@ -20,11 +20,11 @@ fetch('data/Kommun.geojson')
     return response.json();
   })
 
-  // Create and style the Kommun layer
+  // Create and style the kommun layer
   .then(data => {
-    const Kommun = L.geoJSON(data, {
+    const kommun = L.geoJSON(data, {
 
-      // Apply styling to each Kommun polygon
+      // Apply styling to each kommun polygon
       style: feature => {
         const name = feature.properties.KnNamn;
         const isKavlinge = name === 'Kävlinge';
@@ -34,7 +34,7 @@ fetch('data/Kommun.geojson')
           color: isKavlinge ? '#e4572e' : '#a5a5a5',
           weight: isKavlinge ? 3 : 0.5,
 
-          // Grey fill for other Kommun
+          // Grey fill for other kommun
           fillColor: '#b8b8b8',
 
           // Keep Kävlinge transparent so the basemap shows through
@@ -53,7 +53,7 @@ fetch('data/Kommun.geojson')
     }).addTo(map);
 
     // Find Kävlinge's polygon
-    const kavlinge = Kommun.getLayers().find(
+    const kavlinge = kommun.getLayers().find(
       layer => layer.feature.properties.KnNamn === 'Kävlinge'
     );
 
