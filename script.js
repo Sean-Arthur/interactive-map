@@ -2,7 +2,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // Map centred on Kävlinge
   const map = L.map('map').setView([55.7919, 13.1102], 11);
 
-    //  example field reports
+  // Add OpenStreetMap base layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 19
+  }).addTo(map);
+
+  // Example field reports
   const sampleReports = [
     {
       id: 1,
@@ -30,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   ];
 
-  // Display example reports on the map
+  // Display example reports
   const reportsLayer = L.layerGroup().addTo(map);
 
   sampleReports.forEach(report => {
@@ -58,72 +64,69 @@ document.addEventListener('DOMContentLoaded', function () {
     marker.addTo(reportsLayer);
   });
 
-
   // Set cursor to crosshair
   map.getContainer().style.cursor = 'crosshair';
 
-  // Add OpenStreetMap base layer
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors',
-    maxZoom: 19
-  }).addTo(map);
-
-  // Check that the GeoJSON file loaded successfully
+  // Load municipal boundaries
   fetch('data/kommun.geojson')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Could not load kommun boundary file');
-    }
-    return response.json();
-  })
-
-  // Create and style the kommun layer
-  // Create and style the kommun layer
-  .then(data => {
-    const kommun = L.geoJSON(data, {
-      style: feature => {
-        const isKavlinge =
-          feature.properties.KnNamn === 'Kävlinge';
-
-        return {
-          color: isKavlinge ? '#ffffff' : '#a5a5a5',
-          weight: isKavlinge ? 8 : 0.5,
-          fillColor: '#b8b8b8',
-          fillOpacity: isKavlinge ? 0 : 0.75,
-          opacity: 1
-        };
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(
+          `Could not load kommun boundary file: ${response.status}`
+        );
       }
-    }).addTo(map);
+      return response.json();
+    })
+    .then(data => {
+      // Draw all municipalities, with a white halo for Kävlinge
+      const kommun = L.geoJSON(data, {
+        style: feature => {
+          const isKavlinge =
+            feature.properties.KnNamn === 'Kävlinge';
 
-    // Draw the orange outline above the white halo
-    const kavlingeOutline = L.geoJSON(data, {
-      filter: feature =>
-        feature.properties.KnNamn === 'Kävlinge',
-      style: {
-        color: '#f06423',
-        weight: 4,
-        opacity: 1,
-        fillOpacity: 0,
-        interactive: false
+          return {
+            color: isKavlinge ? '#ffffff' : '#a5a5a5',
+            weight: isKavlinge ? 8 : 0.5,
+            fillColor: '#b8b8b8',
+            fillOpacity: isKavlinge ? 0 : 0.75,
+            opacity: 1
+          };
+        }
+      }).addTo(map);
+
+      // Draw the orange outline on top of the white halo
+      L.geoJSON(data, {
+        filter: feature =>
+          feature.properties.KnNamn === 'Kävlinge',
+        style: {
+          color: '#f06423',
+          weight: 4,
+          opacity: 1,
+          fillOpacity: 0
+        },
+        onEachFeature: (feature, layer) => {
+          // Prevent clicks on the outline from opening a map-click form
+          layer.on('click', event => {
+            L.DomEvent.stopPropagation(event);
+          });
+        }
+      }).addTo(map);
+
+      // Zoom to Kävlinge
+      const kavlinge = kommun.getLayers().find(
+        layer => layer.feature.properties.KnNamn === 'Kävlinge'
+      );
+
+      if (kavlinge) {
+        map.fitBounds(kavlinge.getBounds(), {
+          padding: [20, 20]
+        });
+      } else {
+        console.warn('Kävlinge was not found in the GeoJSON data.');
       }
-    }).addTo(map);
+    })
+    .catch(error => {
+      console.error('Boundary loading error:', error);
+    });
+});
 
-    // Find Kävlinge's polygon
-    const kavlinge = kommun.getLayers().find(
-      layer => layer.feature.properties.KnNamn === 'Kävlinge'
-    );
-
-    if (kavlinge) {
-      map.fitBounds(kavlinge.getBounds(), {
-        padding: [20, 20]
-      });
-    }
-  })
-
-
-  // Report errors in the browser console
-  .catch(error => {
-    console.error('Boundary loading error:', error);
-  });
-                          
-  });
