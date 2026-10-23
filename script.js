@@ -78,40 +78,48 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 
   // Create and style the kommun layer
+  // Create and style the kommun layer
   .then(data => {
     const kommun = L.geoJSON(data, {
-
-      // Apply styling to each kommun polygon
       style: feature => {
-        const name = feature.properties.KnNamn;
-        const isKavlinge = name === 'Kävlinge';
+        const isKavlinge =
+          feature.properties.KnNamn === 'Kävlinge';
 
         return {
-          // Orange outline for Kävlinge, grey outlines for other areas
           color: isKavlinge ? '#ffffff' : '#a5a5a5',
           weight: isKavlinge ? 8 : 0.5,
-
-          // Grey fill for other kommun
           fillColor: '#b8b8b8',
-
-          // Keep Kävlinge transparent so the basemap shows through
           fillOpacity: isKavlinge ? 0 : 0.75,
           opacity: 1
         };
-      },
+      }
+    }).addTo(map);
+
+    // Draw the orange outline above the white halo
+    const kavlingeOutline = L.geoJSON(data, {
+      filter: feature =>
+        feature.properties.KnNamn === 'Kävlinge',
+      style: {
+        color: '#f06423',
+        weight: 4,
+        opacity: 1,
+        fillOpacity: 0,
+        interactive: false
+      }
+    }).addTo(map);
 
     // Find Kävlinge's polygon
     const kavlinge = kommun.getLayers().find(
       layer => layer.feature.properties.KnNamn === 'Kävlinge'
     );
 
-    // Zoom to Kävlinge if it was found
     if (kavlinge) {
       map.fitBounds(kavlinge.getBounds(), {
         padding: [20, 20]
       });
     }
   })
+
 
   // Report errors in the browser console
   .catch(error => {
