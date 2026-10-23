@@ -2,6 +2,63 @@ document.addEventListener('DOMContentLoaded', function () {
   // Map centred on Kävlinge
   const map = L.map('map').setView([55.7919, 13.1102], 11);
 
+    //  example field reports
+  const sampleReports = [
+    {
+      id: 1,
+      category: 'Pothole',
+      description: 'Pothole reported on a local road.',
+      status: 'Open',
+      lat: 55.7910,
+      lng: 13.1100
+    },
+    {
+      id: 2,
+      category: 'Streetlight',
+      description: 'Streetlight needs inspection.',
+      status: 'In progress',
+      lat: 55.7950,
+      lng: 13.1020
+    },
+    {
+      id: 3,
+      category: 'Park maintenance',
+      description: 'Maintenance check requested.',
+      status: 'Resolved',
+      lat: 55.7870,
+      lng: 13.1180
+    }
+  ];
+
+  // Display example reports on the map
+  const reportsLayer = L.layerGroup().addTo(map);
+
+  sampleReports.forEach(report => {
+    const marker = L.circleMarker(
+      [report.lat, report.lng],
+      {
+        radius: 8,
+        color: '#ffffff',
+        weight: 2,
+        fillColor: report.status === 'Open'
+          ? '#dc3545'
+          : report.status === 'In progress'
+            ? '#f0ad00'
+            : '#198754',
+        fillOpacity: 1
+      }
+    );
+
+    marker.bindPopup(`
+      <strong>${report.category}</strong><br>
+      ${report.description}<br>
+      <strong>Status:</strong> ${report.status}
+    `);
+
+    marker.addTo(reportsLayer);
+  });
+
+
   // Set cursor to crosshair
   map.getContainer().style.cursor = 'crosshair';
 
