@@ -100,18 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
       },
 
-   const kavlingeOutline = L.geoJSON(data, {
-  filter: feature => feature.properties.KnNamn === 'Kävlinge',
-  style: {
-    color: '#f06423',
-    weight: 4,
-    opacity: 1,
-    fillOpacity: 0,
-    interactive: false
-  }
-
-    }).addTo(map);
-
     // Find Kävlinge's polygon
     const kavlinge = kommun.getLayers().find(
       layer => layer.feature.properties.KnNamn === 'Kävlinge'
