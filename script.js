@@ -100,14 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
       },
 
-      // Add a popup when Kävlinge is clicked
-      onEachFeature: (feature, layer) => {
-        if (feature.properties.KnNamn === 'Kävlinge') {
-          layer.bindPopup('Kävlinge kommun');
-        }
-      }
-    }).addTo(map);
-
    const kavlingeOutline = L.geoJSON(data, {
   filter: feature => feature.properties.KnNamn === 'Kävlinge',
   style: {
